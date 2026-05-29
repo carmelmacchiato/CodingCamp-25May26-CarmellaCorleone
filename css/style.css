@@ -1,0 +1,889 @@
+/* css/style.css — Expense & Budget Visualizer */
+
+/* ── 1. CSS Custom Properties: Light Mode (Soft Girl Palette) ─────────────── */
+:root {
+  /* Backgrounds */
+  --color-bg-page:       #FFF0F3;   /* soft blush — page background */
+  --color-bg-card:       #FFFFFF;   /* white — card/section fill */
+  --color-bg-card-alt:   #FDE8EF;   /* light pink — alternate card tint */
+
+  /* Primary: Pastel Pink */
+  --color-primary:       #E8A0B4;   /* pastel pink — buttons, accents */
+  --color-primary-hover: #D98BA0;   /* slightly deeper pink — hover state */
+  --color-primary-light: #F7C5D5;   /* very light pink — input focus ring */
+
+  /* Accent: Sage Green */
+  --color-accent:        #8FAF8A;   /* sage green — secondary buttons, badges */
+  --color-accent-hover:  #7A9A75;   /* deeper sage — hover state */
+  --color-accent-light:  #C8D8C4;   /* light sage — subtle backgrounds */
+
+  /* Text */
+  --color-text-primary:  #4A3040;   /* deep mauve — headings, primary text */
+  --color-text-secondary:#6B5060;   /* medium mauve — secondary text, labels */
+  --color-text-muted:    #9B8090;   /* muted mauve — placeholders, hints */
+
+  /* Feedback */
+  --color-error-text:    #8B2252;   /* deep rose — error message text */
+  --color-error-bg:      #FFE4EE;   /* blush — error message background */
+  --color-error-border:  #E8A0B4;   /* pastel pink — error border */
+  --color-warning-text:  #6B4C00;   /* warm brown — warning text */
+  --color-warning-bg:    #FFF8E1;   /* soft yellow — warning background */
+
+  /* Borders & Shadows */
+  --color-border:        #F0D0DC;   /* light pink — card borders */
+  --color-border-sage:   #C8D8C4;   /* sage tint — alternate borders */
+  --shadow-card:         0 2px 12px rgba(232, 160, 180, 0.15);
+  --shadow-card-hover:   0 4px 20px rgba(232, 160, 180, 0.25);
+
+  /* Chart: Category Colors (pastel) */
+  --color-chart-food:      #F4A7B9;  /* pastel pink — Food */
+  --color-chart-transport: #B2C9AD;  /* sage green — Transport */
+  --color-chart-fun:       #C9B8E8;  /* soft lavender — Fun */
+}
+
+/* ── 2. CSS Custom Properties: Dark Mode (Deep Plum / Charcoal Palette) ───── */
+[data-theme="dark"] {
+  --color-bg-page:       #1E1525;   /* deep plum — page background */
+  --color-bg-card:       #2A1F30;   /* dark plum card */
+  --color-bg-card-alt:   #251A2B;   /* slightly lighter plum */
+  --color-primary:       #C97A94;   /* muted dusty rose */
+  --color-accent:        #7A9E76;   /* muted sage */
+  --color-text-primary:  #F5E6EC;   /* light blush white */
+  --color-text-secondary:#D4B8C4;   /* muted pink-white */
+  --color-text-muted:    #9B7A8A;   /* muted mauve */
+  --color-error-text:    #F4A0B8;   /* light rose */
+  --color-error-bg:      #3D1A28;   /* dark rose bg */
+  --color-border:        #3D2A35;   /* dark pink border */
+}
+
+/* ── 3. Typography ────────────────────────────────────────────────────────── */
+body {
+  font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+p,
+span,
+label {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+
+/* ── 4. Base / Reset ──────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg-page);
+  color: var(--color-text-secondary);
+  min-height: 100vh;
+}
+
+/* ── 5. Section Card Styles ───────────────────────────────────────────────── */
+section {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  overflow: visible;
+}
+
+/* ── 6. Header ────────────────────────────────────────────────────────────── */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background-color: var(--color-bg-card);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+}
+
+/* ── 7. Responsive Layout ─────────────────────────────────────────────────── */
+
+/* ── 7a. Mobile: 320px – 599px (single column, stacked) ─────────────────── */
+main {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "balance"
+    "form"
+    "list"
+    "summary"
+    "chart";
+  gap: 1rem;
+  padding: 1rem;
+  width: 100%;
+}
+
+#balance-section  { grid-area: balance; }
+#form-section     { grid-area: form; }
+#summary-section  { grid-area: summary; }
+#list-section     { grid-area: list; }
+#chart-section    { grid-area: chart; }
+
+/* ── 7b. Tablet: 600px – 899px (two-column: form|balance top, list middle, chart bottom) */
+@media (min-width: 600px) and (max-width: 899px) {
+  main {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "form    balance"
+      "list    list"
+      "summary summary"
+      "chart   chart";
+    gap: 1.25rem;
+    padding: 1.25rem;
+  }
+}
+
+/* ── 7c. Desktop: 900px – 1199px (two-column: form+list left, balance+chart right) */
+@media (min-width: 900px) and (max-width: 1199px) {
+  main {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "form    balance"
+      "form    chart"
+      "list    list"
+      "summary summary";
+    gap: 1.5rem;
+    padding: 1.5rem;
+    align-items: stretch;
+  }
+
+  #form-section {
+    grid-row: span 2;
+  }
+}
+
+/* ── 7d. Wide: 1200px – 1920px (same two-column, max-width 1200px centered) */
+@media (min-width: 1200px) {
+  main {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "form    balance"
+      "form    chart"
+      "list    list"
+      "summary summary";
+    gap: 1.75rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin-inline: auto;
+    align-items: stretch;
+  }
+
+  #form-section {
+    grid-row: span 2;
+  }
+}
+
+/* ── 7e. Utility: prevent horizontal overflow ────────────────────────────── */
+main {
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+/* ── 8. Buttons ───────────────────────────────────────────────────────────── */
+button,
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+  border: none;
+  border-radius: 10px;
+  padding: 0.65rem 1.4rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-shadow: 0 3px 10px rgba(232, 160, 180, 0.25);
+  letter-spacing: 0.02em;
+}
+
+button:hover,
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(232, 160, 180, 0.35);
+  background: linear-gradient(135deg, var(--color-primary-hover), var(--color-primary));
+}
+
+button:active,
+.btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(232, 160, 180, 0.2);
+}
+
+button:focus-visible,
+.btn:focus-visible {
+  outline: 3px solid var(--color-primary-light);
+  outline-offset: 2px;
+}
+
+/* Secondary / accent buttons */
+.btn-accent,
+#add-category-btn,
+#set-limit-btn {
+  background: linear-gradient(135deg, #B8D4B4, #A0C49C);
+  color: #2E4A2A;
+  box-shadow: 0 3px 10px rgba(160, 196, 156, 0.3);
+}
+
+#add-category-btn {
+  font-size: 0.8rem;
+  padding: 0.45rem 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.btn-accent:hover,
+#add-category-btn:hover,
+#set-limit-btn:hover {
+  box-shadow: 0 5px 16px rgba(160, 196, 156, 0.4);
+  background: linear-gradient(135deg, #A0C49C, #8FB88B);
+}
+
+/* Ghost / subtle buttons (clear, prev/next month) */
+#clear-limit-btn,
+#prev-month-btn,
+#next-month-btn {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1.5px solid var(--color-border);
+  box-shadow: none;
+  padding: 0.5rem 1rem;
+}
+
+#clear-limit-btn:hover,
+#prev-month-btn:hover,
+#next-month-btn:hover {
+  background-color: var(--color-bg-card-alt);
+  border-color: var(--color-primary-light);
+  box-shadow: 0 2px 8px rgba(232, 160, 180, 0.15);
+  transform: translateY(-1px);
+}
+
+#prev-month-btn:disabled,
+#next-month-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Delete button (danger-ish but soft) */
+.delete-btn {
+  background: linear-gradient(135deg, #F4A0B8, #E87A98);
+  color: #fff;
+  font-size: 0.8rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(232, 122, 152, 0.25);
+}
+
+.delete-btn:hover {
+  background: linear-gradient(135deg, #E87A98, #D66A88);
+  box-shadow: 0 4px 12px rgba(232, 122, 152, 0.35);
+}
+
+/* Theme toggle button */
+#theme-toggle {
+  background: var(--color-bg-card-alt);
+  border: 1.5px solid var(--color-border);
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 8px rgba(232, 160, 180, 0.15);
+}
+
+#theme-toggle:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 14px rgba(232, 160, 180, 0.3);
+}
+
+/* Submit button full-width */
+#add-expense-btn {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  margin-top: 0.75rem;
+  border-radius: 12px;
+}
+
+/* ── 9. Form Inputs & Selects ─────────────────────────────────────────────── */
+input[type="text"],
+input[type="number"],
+select {
+  display: block;
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-card);
+  border: 1.5px solid var(--color-border);
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+input[type="text"]:hover,
+input[type="number"]:hover,
+select:hover {
+  border-color: var(--color-primary-light);
+  background-color: #FFFAFC;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(232, 160, 180, 0.2), 0 2px 8px rgba(232, 160, 180, 0.1);
+  background-color: #fff;
+}
+
+input::placeholder {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%239B8090' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px 8px;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+/* Dark mode input adjustments */
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] input[type="number"],
+[data-theme="dark"] select {
+  background-color: var(--color-bg-card-alt);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] input[type="text"]:hover,
+[data-theme="dark"] input[type="number"]:hover,
+[data-theme="dark"] select:hover {
+  background-color: var(--color-bg-card);
+  border-color: var(--color-primary);
+}
+
+[data-theme="dark"] input[type="text"]:focus,
+[data-theme="dark"] input[type="number"]:focus,
+[data-theme="dark"] select:focus {
+  background-color: var(--color-bg-card);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(201, 122, 148, 0.25), 0 2px 8px rgba(201, 122, 148, 0.1);
+}
+
+[data-theme="dark"] select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%239B7A8A' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+}
+
+[data-theme="dark"] input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* ── 10. Form Field Layout ────────────────────────────────────────────────── */
+.form-field {
+  margin-bottom: 1rem;
+}
+
+.form-field label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.02em;
+}
+
+/* Has-error state */
+.form-field.has-error input,
+.form-field.has-error select {
+  border-color: var(--color-error-border);
+  box-shadow: 0 0 0 3px rgba(139, 34, 82, 0.1);
+}
+
+/* ── 11. Balance Display ──────────────────────────────────────────────────── */
+#balance-section {
+  text-align: center;
+  background: linear-gradient(135deg, var(--color-bg-card-alt), var(--color-bg-card));
+}
+
+#balance-display {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-primary-hover);
+  margin: 0.5rem 0 1rem;
+  letter-spacing: -0.02em;
+}
+
+#balance-heading {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+}
+
+.spending-limit-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.spending-limit-controls label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  width: 100%;
+}
+
+.spending-limit-controls input {
+  flex: 1;
+  min-width: 100px;
+}
+
+/* ── 12. Transaction List ─────────────────────────────────────────────────── */
+#transaction-list,
+#monthly-transaction-list {
+  list-style: none;
+  max-height: 350px;
+  overflow: visible;
+  padding: 6px;
+}
+
+#list-section,
+#summary-section {
+  overflow: visible;
+}
+
+#transaction-list li,
+#monthly-transaction-list li {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0.5rem;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+  position: relative;
+}
+
+#transaction-list li .tx-name,
+#monthly-transaction-list li .tx-name {
+  text-align: left;
+}
+
+#transaction-list li .tx-amount {
+  text-align: center;
+}
+
+#transaction-list li .tx-category-badge {
+  text-align: center;
+}
+
+#transaction-list li .delete-btn {
+  justify-self: center;
+}
+
+#transaction-list li:hover,
+#monthly-transaction-list li:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+  z-index: 2;
+}
+
+/* Category badge in transaction list — plain text, no color bg */
+.tx-category-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+/* Category badge (generic, used elsewhere) */
+.category-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  background-color: var(--color-accent-light);
+  color: var(--color-text-primary);
+  letter-spacing: 0.02em;
+}
+
+/* Amount in list */
+.tx-amount {
+  font-weight: 700;
+  color: var(--color-primary-hover);
+  font-size: 0.95rem;
+}
+
+/* ── 13. Sort Controls ────────────────────────────────────────────────────── */
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.sort-controls label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.sort-controls select {
+  flex: 1;
+  max-width: 220px;
+  font-size: 0.8rem;
+  padding: 0.5rem 2.2rem 0.5rem 0.75rem;
+}
+
+/* ── 14. Monthly Summary ──────────────────────────────────────────────────── */
+.month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+#month-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  min-width: 120px;
+  text-align: center;
+}
+
+#monthly-stats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0;
+}
+
+#monthly-stats p {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+/* Monthly category breakdown table */
+#monthly-transaction-list {
+  list-style: none;
+  padding: 0;
+  overflow: visible;
+}
+
+.monthly-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.monthly-table th,
+.monthly-table td {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.monthly-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.monthly-table thead tr {
+  background-color: var(--color-bg-card-alt);
+}
+
+.monthly-table th {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  padding: 0.7rem 1.25rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.monthly-table th:first-child {
+  text-align: left;
+}
+
+.monthly-table th:last-child {
+  text-align: right;
+}
+
+.monthly-table td {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  padding: 0.65rem 1.25rem;
+}
+
+.monthly-table td:first-child {
+  text-align: left;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.monthly-table td:last-child {
+  text-align: right;
+  font-weight: 700;
+  color: var(--color-primary-hover);
+}
+
+.monthly-table tbody tr:hover {
+  background-color: var(--color-bg-card-alt);
+}
+
+/* ── 15. Category Manager ─────────────────────────────────────────────────── */
+#category-manager {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+#category-manager h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 0.75rem;
+}
+
+#custom-category-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0;
+}
+
+#custom-category-list li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: var(--color-bg-card-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 0.3rem 0.5rem 0.3rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+#custom-category-list .category-delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: none;
+  line-height: 1;
+}
+
+#custom-category-list .category-delete-btn:hover {
+  color: var(--color-error-text);
+  background-color: var(--color-error-bg);
+  transform: none;
+}
+
+/* ── 16. Chart Container ──────────────────────────────────────────────────── */
+#chart-container {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+/* ── 17. Scrollbar Styling ────────────────────────────────────────────────── */
+#transaction-list::-webkit-scrollbar,
+#monthly-transaction-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+#transaction-list::-webkit-scrollbar-track,
+#monthly-transaction-list::-webkit-scrollbar-track {
+  background: var(--color-bg-card-alt);
+  border-radius: 3px;
+}
+
+#transaction-list::-webkit-scrollbar-thumb,
+#monthly-transaction-list::-webkit-scrollbar-thumb {
+  background: var(--color-primary-light);
+  border-radius: 3px;
+}
+
+#transaction-list::-webkit-scrollbar-thumb:hover,
+#monthly-transaction-list::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* ── 18. Compat Warning ───────────────────────────────────────────────────── */
+#compat-warning {
+  background-color: var(--color-error-bg);
+  color: var(--color-error-text);
+  border: 2px solid var(--color-error-border);
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  margin: 1rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* ── 19. Error Message Styles ─────────────────────────────────────────────── */
+.error-msg {
+
+  display: block;
+  color: var(--color-error-text);
+  background-color: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
+  border-radius: 8px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 0.35rem;
+}
+
+.error-msg:empty {
+  display: none;
+}
+
+/* ── 20. Placeholder Text ─────────────────────────────────────────────────── */
+.placeholder {
+  color: var(--color-text-muted);
+  font-style: italic;
+  text-align: center;
+  padding: 1.5rem 0;
+  font-size: 0.95rem;
+}
+
+/* ── 21. Spending Limit Highlight Classes ─────────────────────────────────── */
+
+/* Light mode */
+.balance--over-limit {
+  background: linear-gradient(135deg, #FFE4EE, #FFF0F5) !important;
+  border: 2px solid #E8A0B4;
+}
+
+.transaction--over-limit {
+  background-color: #FFF0F5;
+  border-left: 3px solid #E8A0B4;
+}
+
+/* Over-budget notification */
+.over-budget-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #FFE4EE;
+  border: 1px solid #E8A0B4;
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #8B2252;
+  animation: fadeInBounce 0.3s ease;
+}
+
+.over-budget-notice .notice-icon {
+  font-size: 1.1rem;
+}
+
+@keyframes fadeInBounce {
+  0% { opacity: 0; transform: translateY(-5px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Dark mode */
+[data-theme="dark"] .balance--over-limit {
+  background: linear-gradient(135deg, #3D1A28, #2E1520) !important;
+  border: 2px solid #C97A94;
+}
+
+[data-theme="dark"] .transaction--over-limit {
+  background-color: #2E1520;
+  border-left: 3px solid #C97A94;
+}
+
+[data-theme="dark"] .over-budget-notice {
+  background-color: #3D1A28;
+  border-color: #C97A94;
+  color: #F4A0B8;
+}
+
+/* ── 22. Storage Warning Banner ───────────────────────────────────────────── */
+.storage-warning {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  border: 1px solid #E8D4A0;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.storage-warning .dismiss-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-warning-text);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.2rem;
+  box-shadow: none;
+}
